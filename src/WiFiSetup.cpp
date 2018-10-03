@@ -1,7 +1,15 @@
-#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#elif defined(ESP32)
+#include <WiFi.h>
+#include <WebServer.h>
+#endif
+
 //needed for library
 #include <DNSServer.h>
-#include "config.h"
+#include <FS.h>
+#include "Config.h"
 #include "WiFiSetup.h"
 
 WiFiSetupClass WiFiSetup;
