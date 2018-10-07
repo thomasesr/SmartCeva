@@ -233,12 +233,22 @@ static void handleFileList(void) {
 
   String path = server.arg("dir");
   DBG_PRINTLN("handleFileList: " + path);
+  #if defined(ESP32)
+  File dir = SPIFFS.open(path);
+  #else
   Dir dir = SPIFFS.openDir(path);
+  #endif
   path = String();
 
   String output = "[";
+#if defined(ESP32)
+  File entry = dir.openNextFile();
+
+  while(entry){
+#else
   while(dir.next()){
     File entry = dir.openFile("r");
+#endif
     if (output != "[") output += ',';
     bool isDir = false;
     output += "{\"type\":\"";
@@ -247,6 +257,10 @@ static void handleFileList(void) {
     output += String(entry.name()).substring(1);
     output += "\"}";
     entry.close();
+#if defined(ESP32)
+    entry = dir.openNextFile();
+#endif
+
   }
 
   output += "]";
@@ -284,6 +298,7 @@ void ESPUpdateServer_setup(const char* user, const char* pass){
   });
 
   //get heap status, analog input value and all GPIO statuses in one json call
+  #if 0
   server.on("/all", HTTP_GET, [](){
     String json = "{";
     json += "\"heap\":"+String(ESP.getFreeHeap());
@@ -293,6 +308,7 @@ void ESPUpdateServer_setup(const char* user, const char* pass){
     server.send(200, "text/json", json);
     json = String();
   });
+  #endif
 
   server.on(SPIFFS_FORMAT_PATH,HTTP_GET, [](){
      server.sendHeader("Content-Encoding", "gzip");

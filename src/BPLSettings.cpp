@@ -17,6 +17,8 @@ BPLSettings theSettings;
 
 #define BPLSettingFileName "/bpl.cfg"
 
+#define FINGERPRINT_PATTERN 0xEDFEEFDE
+
 void BPLSettings::load()
 {
 	DBG_PRINTF("syscfg:%d, timeinfo:%d, gdc:%d, \
@@ -27,18 +29,24 @@ void BPLSettings::load()
 		 offsetof(Settings,remoteLogginInfo),offsetof(Settings,autoCapSettings),
 		 offsetof(Settings,parasiteTempControlSettings));
 
-	fs::File f = SPIFFS.open(BPLSettingFileName, "r");
+	File f = SPIFFS.open(BPLSettingFileName, "r");
 	if(!f){
+		DBG_PRINTF("Use Default values\n");
 		setDefault();
 		return;
 	}
 	f.read((uint8_t*)&_data,sizeof(_data));
 	f.close();
+	if(_data.fingerprint != FINGERPRINT_PATTERN){
+		DBG_PRINTF("Setting corruption.\n");
+		setDefault();
+		return;
+	}
 }
 
 void BPLSettings::save()
 {
-	fs::File f = SPIFFS.open(BPLSettingFileName, "w");
+	File f = SPIFFS.open(BPLSettingFileName, "w");
     if(!f){
 		DBG_PRINTF("error open configuratoin file\n");
 		return;
@@ -61,6 +69,7 @@ void BPLSettings::setDefault(void)
     defaultRemoteLogging();
     defaultAutoCapSettings();
     defaultParasiteTempControlSettings();
+	_data.fingerprint = FINGERPRINT_PATTERN;
 }
 
 void BPLSettings::defaultTimeInformation(void){}

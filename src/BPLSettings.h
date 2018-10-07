@@ -179,6 +179,7 @@ struct Settings{
     RemoteLoggingInformation remoteLogginInfo; // 636: 444
     AutoCapSettings autoCapSettings; // 1080: 12
     ParasiteTempControlSettings parasiteTempControlSettings; //1092: 20
+    uint32_t fingerprint;
 };
 
 class BPLSettings

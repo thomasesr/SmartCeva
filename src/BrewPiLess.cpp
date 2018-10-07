@@ -389,7 +389,20 @@ class BrewPiWebHandler: public AsyncWebHandler
 		if(file){
 			DBG_PRINTF("using embedded file:%s\n",path.c_str());
 			if(gzip){
+				#if defined(ESP32)
+                AsyncWebServerResponse *response = request->beginResponse("text/html", size,[=](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
+					 //Write up to "maxLen" bytes into "buffer" and return the amount written.
+  					//index equals the amount of bytes that have been already sent
+  					//You will not be asked for more bytes once the content length has been reached.
+  					//Keep in mind that you can not delay or yield waiting for more data!
+  					//Send what you currently have and you will be asked for more again
+  					memcpy(buffer,file + index, maxLen);
+					return maxLen;
+				});
+
+				#else
                 AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", file, size);
+				#endif
                 response->addHeader("Content-Encoding", "gzip");
                 request->send(response);
 			}else sendProgmem(request,(const char*)file);
@@ -1476,7 +1489,11 @@ void setup(void){
 
 	//0.Initialize file system
 	//start SPI Filesystem
-  	if(!SPIFFS.begin()){
+#if defined(ESP32)
+  	if(!SPIFFS.begin(true)){
+#else
+	if(!SPIFFS.begin()){
+#endif
   		// TO DO: what to do?
   		DBG_PRINTF("SPIFFS.being() failed!\n");
   	}else{
@@ -1510,7 +1527,11 @@ void setup(void){
 	WiFiMode wifiMode= (WiFiMode) syscfg->wifiMode;
 	WiFiSetup.staConfig(wifiMode == WIFI_AP,IPAddress(syscfg->ip),IPAddress(syscfg->gw),IPAddress(syscfg->netmask));
 	WiFiSetup.onEvent(wiFiEvent);
-	WiFiSetup.begin(syscfg->hostnetworkname,syscfg->password);
+	if(strlen(syscfg->hostnetworkname)>0)
+		WiFiSetup.begin(syscfg->hostnetworkname,syscfg->password);
+	else // something wrong with the file
+		WiFiSetup.begin(DEFAULT_HOSTNAME,DEFAULT_PASSWORD);
+
 
   	DBG_PRINTF("WiFi Done!\n");
 
@@ -1527,6 +1548,7 @@ void setup(void){
 
 
 	//3. setup Web Server
+	DBG_PRINTF("Starting server @%d!\n",syscfg->port);
 	webServer=new AsyncWebServer(syscfg->port);
 	// start WEB update pages.
 #if (DEVELOPMENT_OTA == true) || (DEVELOPMENT_FILEMANAGER == true)

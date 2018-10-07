@@ -450,7 +450,7 @@
 #undef DEVELOPMENT_OTA
 #undef DEVELOPMENT_FILEMANAGER
 #define DEVELOPMENT_OTA false
-#define DEVELOPMENT_FILEMANAGER false
+#define DEVELOPMENT_FILEMANAGER true
 #endif
 // for web interface update
 #define UPDATE_SERVER_PORT 8008

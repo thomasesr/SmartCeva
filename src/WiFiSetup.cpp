@@ -59,18 +59,25 @@ void WiFiSetupClass::begin(char const *ssid,const char *passwd)
 	_apName=ssid;
 	_apPassword=passwd;
 
-	if( _settingApMode){
+	if(_settingApMode){
 		DBG_PRINTF("\nAP mode\n");
 		WiFi.mode(WIFI_AP);
 		_apMode=true;
 	}else{
 		DBG_PRINTF("\nAP_STA mode\n");
-		WiFi.mode(WIFI_AP_STA);
-		_apMode=false;
-		if(_ip !=INADDR_NONE){
-			WiFi.config(_ip,_gw,_nm);
+
+		if(WiFi.SSID()==""){
+			DBG_PRINTF("\nNo ssid, forced AP mode\n");
+			WiFi.mode(WIFI_AP);
+			_apMode=true; 
+		}else{
+			WiFi.mode(WIFI_AP_STA);
+			_apMode=false;
+			if(_ip !=INADDR_NONE){
+				WiFi.config(_ip,_gw,_nm);
+			}
+			WiFi.begin();
 		}
-		WiFi.begin();
 	}
 	WiFi.softAP(_apName, _apPassword);
 	setupApService();
@@ -282,7 +289,12 @@ String WiFiSetupClass::scanWifi(void) {
         	//int quality = getRSSIasQuality(WiFi.RSSI(indices[i]));
 			String item=String("{\"ssid\":\"") + WiFi.SSID(indices[i]) + 
 			String("\",\"rssi\":") + WiFi.RSSI(indices[i]) +
-			String(",\"enc\":") +  String((WiFi.encryptionType(indices[i]) != ENC_TYPE_NONE)? "1":"0")
+			String(",\"enc\":") + 
+			#if defined(ESP32)
+			 String((WiFi.encryptionType(indices[i]) != WIFI_AUTH_OPEN)? "1":"0")
+			#else
+			 String((WiFi.encryptionType(indices[i]) != ENC_TYPE_NONE)? "1":"0")
+			#endif
 			+ String("}");
 			if(comma){
 				rst += ",";	
