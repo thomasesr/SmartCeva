@@ -301,7 +301,7 @@
 #define LCD_AUTO_ADDRESSING true
 
 #ifdef BREWPI_OLED128x64_LCD
-#define OLED128x64_LCD_ADDRESS 0x3c
+#define OLED128x64_LCD_ADDRESS 0x78
 #define STATUS_LINE 1
 //////////////////////////////////////////////////////////////////////////
 //
@@ -396,7 +396,7 @@
 //#endif
 
 #define EMIWorkaround 1
-#define BPL_VERSION "3.4"
+#define BPL_VERSION "3.4.1"
 
 #ifndef EanbleParasiteTempControl
 #define EanbleParasiteTempControl 0
@@ -450,10 +450,10 @@
 #define FILE_MANAGEMENT_PATH "/filemanager"
 #define SYSTEM_UPDATE_PATH "/systemupdate"
 
-#define DEFAULT_PAGE_TITLE "BrewPiLess"
-#define DEFAULT_HOSTNAME "brewpiless"
-#define DEFAULT_USERNAME "brewpiless"
-#define DEFAULT_PASSWORD "brewpiless"
+#define DEFAULT_PAGE_TITLE "SmartCeva"
+#define DEFAULT_HOSTNAME "SmartCeva"
+#define DEFAULT_USERNAME "smartceva"
+#define DEFAULT_PASSWORD "smartceva"
 
 
 #ifndef WebPageLanguage
