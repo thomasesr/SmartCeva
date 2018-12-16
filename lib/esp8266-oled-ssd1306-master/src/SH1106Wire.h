@@ -1,8 +1,8 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 by Daniel Eichhorn
- * Copyright (c) 2016 by Fabrice Weinberg
+ * Copyright (c) 2018 by ThingPulse, Daniel Eichhorn
+ * Copyright (c) 2018 by Fabrice Weinberg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * Credits for parts of this code go to Mike Rankin. Thank you so much for sharing!
+ * ThingPulse invests considerable time and money to develop these open source libraries.
+ * Please support us by buying our products (and not the clones) from
+ * https://thingpulse.com
+ *
  */
 
 #ifndef SH1106Wire_h
@@ -44,7 +47,9 @@ class SH1106Wire : public OLEDDisplay {
       uint8_t             _scl;
 
   public:
-    SH1106Wire(uint8_t _address, uint8_t _sda, uint8_t _scl) {
+    SH1106Wire(uint8_t _address, uint8_t _sda, uint8_t _scl, OLEDDISPLAY_GEOMETRY g = GEOMETRY_128_64) {
+      setGeometry(g);
+
       this->_address = _address;
       this->_sda = _sda;
       this->_scl = _scl;
@@ -60,19 +65,19 @@ class SH1106Wire : public OLEDDisplay {
 
     void display(void) {
       #ifdef OLEDDISPLAY_DOUBLE_BUFFER
-        uint8_t minBoundY = ~0;
+        uint8_t minBoundY = UINT8_MAX;
         uint8_t maxBoundY = 0;
 
-        uint8_t minBoundX = ~0;
+        uint8_t minBoundX = UINT8_MAX;
         uint8_t maxBoundX = 0;
 
         uint8_t x, y;
 
         // Calculate the Y bounding box of changes
         // and copy buffer[pos] to buffer_back[pos];
-        for (y = 0; y < (DISPLAY_HEIGHT / 8); y++) {
-          for (x = 0; x < DISPLAY_WIDTH; x++) {
-           uint16_t pos = x + y * DISPLAY_WIDTH;
+        for (y = 0; y < (displayHeight / 8); y++) {
+          for (x = 0; x < displayWidth; x++) {
+           uint16_t pos = x + y * displayWidth;
            if (buffer[pos] != buffer_back[pos]) {
              minBoundY = _min(minBoundY, y);
              maxBoundY = _max(maxBoundY, y);
@@ -87,7 +92,7 @@ class SH1106Wire : public OLEDDisplay {
         // If the minBoundY wasn't updated
         // we can savely assume that buffer_back[pos] == buffer[pos]
         // holdes true for all values of pos
-        if (minBoundY == ~0) return;
+        if (minBoundY == UINT8_MAX) return;
 
         // Calculate the colum offset
         uint8_t minBoundXp2H = (minBoundX + 2) & 0x0F;
@@ -103,7 +108,7 @@ class SH1106Wire : public OLEDDisplay {
               Wire.beginTransmission(_address);
               Wire.write(0x40);
             }
-            Wire.write(buffer[x + y * DISPLAY_WIDTH]);
+            Wire.write(buffer[x + y * displayWidth]);
             k++;
             if (k == 16)  {
               Wire.endTransmission();
