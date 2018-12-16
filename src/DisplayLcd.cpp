@@ -278,7 +278,7 @@ void LcdDisplay::printState(void){
 #if DISPLAY_TIME_HMS  // 96 bytes more space required.
 		unsigned int minutes = time/60;
 		unsigned int hours = minutes/60;
-		int stringLength = sprintf_P(timeString, PSTR("%dh%02dm%02d"), hours, minutes%60, time%60);
+		int stringLength = sprintf_P(timeString, PSTR("%02dh%02dm%02d"), hours, minutes%60, time%60);
 		char * printString = timeString;
 		if(!hours){
 			printString = &timeString[2];
