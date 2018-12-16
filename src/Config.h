@@ -390,7 +390,7 @@ config
 
 #define BUFFER_PILINK_PRINTS 1
 
-#define EARLY_OLED_DISPLAY 1
+#define EARLY_DISPLAY 1
 
 //#ifdef EnableGlycolSupport
 #define FridgeSensorFallBack true

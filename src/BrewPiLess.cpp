@@ -1464,7 +1464,7 @@ void setup(void){
   	}
 
 
-#ifdef EARLY_OLED_DISPLAY
+#ifdef EARLY_DISPLAY
 	DBG_PRINTF("Init LCD...\n");
 	display.init();
 	//display.printAt_P(1,0,PSTR("Initialize WiFi"));
