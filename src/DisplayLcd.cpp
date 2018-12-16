@@ -44,14 +44,14 @@ LcdDriver LcdDisplay::lcd;
 #endif
 #endif // #if BREWPI_OLED128x64_LCD
 // Constant strings used multiple times
-static const char STR_Beer_[] PROGMEM = "Ceva ";
-static const char STR_Fridge_[] PROGMEM = "Geladeira ";
-static const char STR_Const_[] PROGMEM = "Const";
-static const char STR_Cool[] PROGMEM = "Esfria";
-static const char STR_Heat[] PROGMEM = "Aquece";
-static const char STR_ing_for[] PROGMEM = "ando por";
-static const char STR_Wait_to_[] PROGMEM = "Aguard para ";
-static const char STR__time_left[] PROGMEM = " tempo restante";
+static const char STR_Beer_[] PROGMEM = "Beer ";
+static const char STR_Fridge_[] PROGMEM = "Fridge ";
+static const char STR_Const_[] PROGMEM = "Const.";
+static const char STR_Cool[] PROGMEM = "Cool";
+static const char STR_Heat[] PROGMEM = "Heat";
+static const char STR_ing_for[] PROGMEM = "ing for";
+static const char STR_Wait_to_[] PROGMEM = "Wait to ";
+static const char STR__time_left[] PROGMEM = " time left";
 static const char STR_empty_string[] PROGMEM = "";
 
 void LcdDisplay::init(void){
@@ -138,9 +138,9 @@ void LcdDisplay::printTemperature(temperature temp){
 
 //print the stationary text on the lcd.
 void LcdDisplay::printStationaryText(void){
-	printAt_P(0, 0, PSTR("Modo"));
+	printAt_P(0, 0, PSTR("Mode"));
 	printAt_P(0, 1, STR_Beer_);
-	printAt_P(0, 2, (flags & LCD_FLAG_DISPLAY_ROOM) ?  PSTR("Ambi.  ") : STR_Fridge_);
+	printAt_P(0, 2, (flags & LCD_FLAG_DISPLAY_ROOM) ?  PSTR("Room  ") : STR_Fridge_);
 	printDegreeUnit(18, 1);
 	printDegreeUnit(18, 2);
 }
@@ -178,16 +178,16 @@ void LcdDisplay::printMode(void){
 			break;
 		case MODE_BEER_PROFILE:
 			lcd.print_P(STR_Beer_);
-			lcd.print_P(PSTR("Perfil"));
+			lcd.print_P(PSTR("Profile"));
 			break;
 		case MODE_OFF:
-			lcd.print_P(PSTR("Desl"));
+			lcd.print_P(PSTR("Off"));
 			break;
 		case MODE_TEST:
-			lcd.print_P(PSTR("** Testando **"));
+			lcd.print_P(PSTR("** Testing **"));
 			break;
 		default:
-			lcd.print_P(PSTR("Modo invalido"));
+			lcd.print_P(PSTR("Invalid mode"));
 			break;
 	}
 	lcd.printSpacesToRestOfLine();
@@ -204,7 +204,7 @@ void LcdDisplay::printState(void){
 		const char * part2 = STR_empty_string;
 		switch (state){
 			case IDLE:
-				part1 = PSTR("aguarda");
+				part1 = PSTR("Idl");
 				part2 = STR_ing_for;
 				break;
 			case WAITING_TO_COOL:
@@ -216,7 +216,7 @@ void LcdDisplay::printState(void){
 				part2 = STR_Heat;
 				break;
 			case WAITING_FOR_PEAK_DETECT:
-				part1 = PSTR("Aguardando Pico");
+				part1 = PSTR("Waiting for peak");
 				break;
 			case COOLING:
 				part1 = STR_Cool;
@@ -235,13 +235,13 @@ void LcdDisplay::printState(void){
 				part2 = STR__time_left;
 				break;
 			case DOOR_OPEN:
-				part1 = PSTR("Porta Aberta");
+				part1 = PSTR("Door open");
 				break;
 			case STATE_OFF:
-				part1 = PSTR("Desligado");
+				part1 = PSTR("Temp. control OFF");
 				break;
 			default:
-				part1 = PSTR("Status Desconhecido");
+				part1 = PSTR("Unknown status!");
 				break;
 		}
 		printAt_P(0, 3, part1);

@@ -99,8 +99,8 @@ const char* TimeKeeperClass::getDateTimeStr(void)
 	tm *t= localtime(&current);
 
   //2016-07-01T05:22:33Z
-	sprintf(_dateTimeStrBuff,"%02d-%02d-%dT%02d:%02d:%02dZ",
-		t->tm_mday,t->tm_mon +1,t->tm_year+1900,t->tm_hour,t->tm_min,t->tm_sec);
+	sprintf(_dateTimeStrBuff,"%d-%02d-%02dT%02d:%02d:%02dZ",
+		t->tm_year+1900,t->tm_mon +1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec);
 	return _dateTimeStrBuff;
 }
 
