@@ -1467,7 +1467,8 @@ void setup(void){
 #ifdef EARLY_DISPLAY
 	DBG_PRINTF("Init LCD...\n");
 	display.init();
-	display.printAt_P(1,0,PSTR("Initialize WiFi"));
+	display.printAt_P(1,0,PSTR("Iniciando SmartCeva"));
+	//display.drawXbm(34, 14, Logo_width, Logo_height, Logo_bits);
 	display.updateBacklight();
 	DBG_PRINTF("LCD Initialized..\n");
 #endif
