@@ -301,7 +301,7 @@
 #define LCD_AUTO_ADDRESSING true
 
 #ifdef BREWPI_OLED128x64_LCD
-#define OLED128x64_LCD_ADDRESS 0x78
+#define OLED128x64_LCD_ADDRESS 0x3c
 #define STATUS_LINE 1
 //////////////////////////////////////////////////////////////////////////
 //
